@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { BrowserRouter } from "react-router-dom";
 
 if (import.meta.env.VITE_ENVIRONMENT === "development") {
   const { worker } = await import("./api/mocks/browser");
@@ -11,6 +12,8 @@ if (import.meta.env.VITE_ENVIRONMENT === "development") {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>
 );
