@@ -1,18 +1,18 @@
-import { Link } from "react-router-dom";
+import styled from "@emotion/styled";
+import { Link } from "@mui/material";
 
 export const AuthNavigation = () => {
+  const Navigation = styled.nav`
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    justify-content: flex-end;
+  `;
+
   return (
-    <>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/login">login</Link>
-          </li>
-          <li>
-            <Link to="/register">register</Link>
-          </li>
-        </ul>
-      </nav>
-    </>
+    <Navigation>
+      <Link href="/login">Sign in</Link>
+      <Link href="/register">Sign up</Link>
+    </Navigation>
   );
 };

@@ -10,9 +10,14 @@ servers:
     description: Production server
   - url: http://localhost:3000/v1
     description: Development server
+tags:
+  - name: Authentication
+    description: Endpoints for user authentication and management
 paths:
   /auth/register:
     post:
+      tags:
+        - Authentication
       summary: User Registration
       description: Register a new user account. Sends a verification email upon successful registration.
       requestBody:
@@ -21,6 +26,13 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/RegisterRequest"
+            examples:
+              RegisterExample:
+                summary: Sample Registration Request
+                value:
+                  username: johndoe
+                  email: johndoe@example.com
+                  password: StrongP@ssw0rd
       responses:
         "201":
           description: User registered successfully. Verification email sent.
@@ -28,20 +40,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                SuccessExample:
+                  summary: Successful Registration
+                  value:
+                    message: User registered successfully. Verification email sent.
         "400":
           description: Invalid input data.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                InvalidInputExample:
+                  summary: Invalid Input
+                  value:
+                    error: Invalid email format.
+                    errorCode: AUTH_INVALID_INPUT
+                    details: The provided email address is not valid.
         "409":
           description: User already exists.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UserExistsExample:
+                  summary: User Already Exists
+                  value:
+                    error: User already exists.
+                    errorCode: AUTH_USER_EXISTS
+                    details: The email address is already registered.
   /auth/verify-email:
     get:
+      tags:
+        - Authentication
       summary: Verify Email
       description: Verify user's email address using a token sent via email.
       parameters:
@@ -58,20 +91,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                VerifiedExample:
+                  summary: Successful Email Verification
+                  value:
+                    message: Email verified successfully.
         "400":
           description: Invalid or expired token.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                InvalidTokenExample:
+                  summary: Invalid Token
+                  value:
+                    error: Invalid or expired token.
+                    errorCode: AUTH_INVALID_TOKEN
+                    details: The verification token is invalid or has expired.
         "404":
           description: Verification token not found.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                TokenNotFoundExample:
+                  summary: Token Not Found
+                  value:
+                    error: Verification token not found.
+                    errorCode: AUTH_TOKEN_NOT_FOUND
+                    details: No verification token found for the provided token.
   /auth/login:
     post:
+      tags:
+        - Authentication
       summary: User Login
       description: Authenticate a user and issue a JWT token.
       requestBody:
@@ -80,6 +134,12 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/LoginRequest"
+            examples:
+              LoginExample:
+                summary: Sample Login Request
+                value:
+                  email: johndoe@example.com
+                  password: StrongP@ssw0rd
       responses:
         "200":
           description: Successful login.
@@ -87,20 +147,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              examples:
+                AuthSuccessExample:
+                  summary: Successful Authentication
+                  value:
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refreshToken: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+                    expiresIn: 3600
+                    userId: 123e4567-e89b-12d3-a456-426614174000
+                    username: johndoe
         "400":
           description: Invalid input data.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                InvalidInputExample:
+                  summary: Invalid Input
+                  value:
+                    error: Invalid email format.
+                    errorCode: AUTH_INVALID_INPUT
+                    details: The provided email address is not valid.
         "401":
           description: Unauthorized. Invalid credentials or email not verified.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UnauthorizedExample:
+                  summary: Unauthorized
+                  value:
+                    error: Unauthorized. Invalid credentials or email not verified.
+                    errorCode: AUTH_UNAUTHORIZED
+                    details: The email address is not verified or the password is incorrect.
   /auth/logout:
     post:
+      tags:
+        - Authentication
       summary: User Logout
       description: Invalidate the user's JWT token.
       security:
@@ -112,14 +197,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                LogoutSuccessExample:
+                  summary: Successful Logout
+                  value:
+                    message: Successfully logged out.
         "401":
           description: Unauthorized.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UnauthorizedExample:
+                  summary: Unauthorized
+                  value:
+                    error: Unauthorized.
+                    errorCode: AUTH_UNAUTHORIZED
+                    details: No valid JWT token provided.
   /auth/password-reset-request:
     post:
+      tags:
+        - Authentication
       summary: Password Reset Request
       description: Request a password reset email.
       requestBody:
@@ -128,6 +227,11 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordResetRequest"
+            examples:
+              PasswordResetRequestExample:
+                summary: Sample Password Reset Request
+                value:
+                  email: johndoe@example.com
       responses:
         "200":
           description: Password reset email sent.
@@ -135,20 +239,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                ResetEmailSentExample:
+                  summary: Password Reset Email Sent
+                  value:
+                    message: Password reset email sent.
         "400":
           description: Invalid input data.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                InvalidInputExample:
+                  summary: Invalid Input
+                  value:
+                    error: Invalid email format.
+                    errorCode: AUTH_INVALID_INPUT
+                    details: The provided email address is not valid.
         "404":
           description: User not found.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UserNotFoundExample:
+                  summary: User Not Found
+                  value:
+                    error: User not found.
+                    errorCode: AUTH_USER_NOT_FOUND
+                    details: No user found with the provided email address.
   /auth/password-reset:
     post:
+      tags:
+        - Authentication
       summary: Password Reset
       description: Reset the user's password using a reset token.
       requestBody:
@@ -157,6 +282,12 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/PasswordReset"
+            examples:
+              PasswordResetExample:
+                summary: Sample Password Reset
+                value:
+                  token: dGhpc2lzYXRlc3R0b2tlbg...
+                  newPassword: NewStr0ngP@ssw0rd
       responses:
         "200":
           description: Password reset successfully.
@@ -164,14 +295,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                ResetSuccessExample:
+                  summary: Password Reset Successful
+                  value:
+                    message: Password reset successfully.
         "400":
           description: Invalid or expired reset token.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                InvalidTokenExample:
+                  summary: Invalid Token
+                  value:
+                    error: Invalid or expired reset token.
+                    errorCode: AUTH_INVALID_TOKEN
+                    details: The password reset token is invalid or has expired.
   /auth/delete-account:
     delete:
+      tags:
+        - Authentication
       summary: Delete User Account
       description: Delete the authenticated user's account.
       security:
@@ -183,14 +328,28 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MessageResponse"
+              examples:
+                DeleteSuccessExample:
+                  summary: Account Deleted Successfully
+                  value:
+                    message: Account deleted successfully.
         "401":
           description: Unauthorized.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UnauthorizedExample:
+                  summary: Unauthorized
+                  value:
+                    error: Unauthorized.
+                    errorCode: AUTH_UNAUTHORIZED
+                    details: No valid JWT token provided.
   /auth/profile:
     get:
+      tags:
+        - Authentication
       summary: Get User Profile
       description: Retrieve the authenticated user's profile information.
       security:
@@ -202,14 +361,32 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserProfile"
+              examples:
+                UserProfileExample:
+                  summary: Sample User Profile
+                  value:
+                    id: 123e4567-e89b-12d3-a456-426614174000
+                    username: johndoe
+                    email: johndoe@example.com
+                    createdAt: 2023-01-01T12:00:00Z
+                    updatedAt: 2023-06-01T12:00:00Z
         "401":
           description: Unauthorized.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UnauthorizedExample:
+                  summary: Unauthorized
+                  value:
+                    error: Unauthorized.
+                    errorCode: AUTH_UNAUTHORIZED
+                    details: No valid JWT token provided.
   /auth/refresh-token:
     post:
+      tags:
+        - Authentication
       summary: Refresh JWT Token
       description: Refresh the JWT token using a refresh token.
       requestBody:
@@ -218,6 +395,11 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/RefreshTokenRequest"
+            examples:
+              RefreshTokenExample:
+                summary: Sample Refresh Token Request
+                value:
+                  refreshToken: dGhpc2lzYXJlZnJlZXNodG9rZW4...
       responses:
         "200":
           description: Token refreshed successfully.
@@ -225,18 +407,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
+              examples:
+                RefreshSuccessExample:
+                  summary: Token Refreshed Successfully
+                  value:
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    refreshToken: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+                    expiresIn: 3600
+                    userId: 123e4567-e89b-12d3-a456-426614174000
+                    username: johndoe
         "400":
           description: Invalid refresh token.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                InvalidRefreshTokenExample:
+                  summary: Invalid Refresh Token
+                  value:
+                    error: Invalid refresh token.
+                    errorCode: AUTH_INVALID_REFRESH_TOKEN
+                    details: The provided refresh token is invalid.
         "401":
           description: Unauthorized.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                UnauthorizedExample:
+                  summary: Unauthorized
+                  value:
+                    error: Unauthorized.
+                    errorCode: AUTH_UNAUTHORIZED
+                    details: No valid JWT token provided.
 components:
   securitySchemes:
     bearerAuth:
@@ -262,8 +467,6 @@ components:
           example: johndoe@example.com
         password:
           type: string
-          format: password
-          minLength: 8
           example: StrongP@ssw0rd
     LoginRequest:
       type: object
@@ -277,7 +480,6 @@ components:
           example: johndoe@example.com
         password:
           type: string
-          format: password
           example: StrongP@ssw0rd
     AuthResponse:
       type: object
@@ -323,8 +525,6 @@ components:
           example: dGhpc2lzYXRlc3R0b2tlbg...
         newPassword:
           type: string
-          format: password
-          minLength: 8
           example: NewStr0ngP@ssw0rd
     RefreshTokenRequest:
       type: object
