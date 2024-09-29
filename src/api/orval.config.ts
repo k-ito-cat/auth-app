@@ -14,7 +14,7 @@ export default defineConfig({
       client: "axios",
     },
   },
-  auth: {
+  formSchema: {
     input: {
       target: "./docs/auth.yaml",
     },
