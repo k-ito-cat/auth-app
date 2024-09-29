@@ -18,13 +18,12 @@ import {
 export const postAuthRegisterBodyUsernameMin = 3;
 
 export const postAuthRegisterBodyUsernameMax = 30;
-export const postAuthRegisterBodyPasswordMin = 8;
 
 
 export const postAuthRegisterBody = zod.object({
   "username": zod.string().min(postAuthRegisterBodyUsernameMin).max(postAuthRegisterBodyUsernameMax),
   "email": zod.string().email(),
-  "password": zod.string().min(postAuthRegisterBodyPasswordMin)
+  "password": zod.string()
 })
 
 
@@ -85,12 +84,9 @@ export const postAuthPasswordResetRequestResponse = zod.object({
  * Reset the user's password using a reset token.
  * @summary Password Reset
  */
-export const postAuthPasswordResetBodyNewPasswordMin = 8;
-
-
 export const postAuthPasswordResetBody = zod.object({
   "token": zod.string(),
-  "newPassword": zod.string().min(postAuthPasswordResetBodyNewPasswordMin)
+  "newPassword": zod.string()
 })
 
 export const postAuthPasswordResetResponse = zod.object({
