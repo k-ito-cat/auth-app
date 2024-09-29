@@ -1,0 +1,385 @@
+openapi: 3.1.0
+info:
+  title: Authentication API
+  version: 1.1.0
+  description: >
+    API specification for authentication mechanisms using React frontend and Express or Hono backend.
+    Supports user registration, email verification, login, password reset, account deletion, logout, and other common authentication functionalities.
+servers:
+  - url: https://api.yourdomain.com/v1
+    description: Production server
+  - url: http://localhost:3000/v1
+    description: Development server
+paths:
+  /auth/register:
+    post:
+      summary: User Registration
+      description: Register a new user account. Sends a verification email upon successful registration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered successfully. Verification email sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid input data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User already exists.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/verify-email:
+    get:
+      summary: Verify Email
+      description: Verify user's email address using a token sent via email.
+      parameters:
+        - in: query
+          name: token
+          schema:
+            type: string
+          required: true
+          description: Email verification token.
+      responses:
+        "200":
+          description: Email verified successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid or expired token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Verification token not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/login:
+    post:
+      summary: User Login
+      description: Authenticate a user and issue a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Successful login.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Invalid input data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized. Invalid credentials or email not verified.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/logout:
+    post:
+      summary: User Logout
+      description: Invalidate the user's JWT token.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully logged out.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/password-reset-request:
+    post:
+      summary: Password Reset Request
+      description: Request a password reset email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordResetRequest"
+      responses:
+        "200":
+          description: Password reset email sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid input data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: User not found.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/password-reset:
+    post:
+      summary: Password Reset
+      description: Reset the user's password using a reset token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PasswordReset"
+      responses:
+        "200":
+          description: Password reset successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid or expired reset token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/delete-account:
+    delete:
+      summary: Delete User Account
+      description: Delete the authenticated user's account.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Account deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/profile:
+    get:
+      summary: Get User Profile
+      description: Retrieve the authenticated user's profile information.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /auth/refresh-token:
+    post:
+      summary: Refresh JWT Token
+      description: Refresh the JWT token using a refresh token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshTokenRequest"
+      responses:
+        "200":
+          description: Token refreshed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Invalid refresh token.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 30
+          example: johndoe
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: StrongP@ssw0rd
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+        password:
+          type: string
+          format: password
+          example: StrongP@ssw0rd
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: JWT access token.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        refreshToken:
+          type: string
+          description: JWT refresh token.
+          example: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds.
+          example: 3600
+        userId:
+          type: string
+          description: Unique identifier for the user.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        username:
+          type: string
+          description: Username of the authenticated user.
+          example: johndoe
+    PasswordResetRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: johndoe@example.com
+    PasswordReset:
+      type: object
+      required:
+        - token
+        - newPassword
+      properties:
+        token:
+          type: string
+          description: Password reset token.
+          example: dGhpc2lzYXRlc3R0b2tlbg...
+        newPassword:
+          type: string
+          format: password
+          minLength: 8
+          example: NewStr0ngP@ssw0rd
+    RefreshTokenRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+          description: JWT refresh token.
+          example: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the user.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        username:
+          type: string
+          description: Username of the user.
+          example: johndoe
+        email:
+          type: string
+          format: email
+          description: Email address of the user.
+          example: johndoe@example.com
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp.
+          example: 2023-01-01T12:00:00Z
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last profile update timestamp.
+          example: 2023-06-01T12:00:00Z
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Operation result message.
+          example: Operation completed successfully.
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message.
+          example: Invalid credentials.
+        errorCode:
+          type: string
+          description: Specific error code.
+          example: AUTH_INVALID_CREDENTIALS
+        details:
+          type: string
+          description: Additional details about the error.
+          example: The provided password does not match our records.

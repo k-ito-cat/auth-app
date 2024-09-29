@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import axios from "axios";
+import { axiosClient } from "../api/axiosClient";
 
 export const Home = () => {
   useEffect(() => {
@@ -8,7 +8,7 @@ export const Home = () => {
 
   const fetchRequest = async () => {
     try {
-      const res = await axios.get("/user");
+      const res = await axiosClient.get("/profile");
       console.log(res.data);
     } catch (e) {
       console.log(e);
