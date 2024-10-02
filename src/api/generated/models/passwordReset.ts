@@ -8,6 +8,10 @@
  */
 
 export interface PasswordReset {
+  /**
+   * @minLength 8
+   * @maxLength 30
+   */
   newPassword: string;
   /** Password reset token. */
   token: string;

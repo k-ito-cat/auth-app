@@ -467,6 +467,8 @@ components:
           example: johndoe@example.com
         password:
           type: string
+          minLength: 8
+          maxLength: 30
           example: StrongP@ssw0rd
     LoginRequest:
       type: object
@@ -480,6 +482,8 @@ components:
           example: johndoe@example.com
         password:
           type: string
+          minLength: 8
+          maxLength: 30
           example: StrongP@ssw0rd
     AuthResponse:
       type: object
@@ -525,6 +529,8 @@ components:
           example: dGhpc2lzYXRlc3R0b2tlbg...
         newPassword:
           type: string
+          minLength: 8
+          maxLength: 30
           example: NewStr0ngP@ssw0rd
     RefreshTokenRequest:
       type: object
