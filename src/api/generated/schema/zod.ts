@@ -18,12 +18,15 @@ import {
 export const postAuthRegisterBodyUsernameMin = 3;
 
 export const postAuthRegisterBodyUsernameMax = 30;
+export const postAuthRegisterBodyPasswordMin = 8;
+
+export const postAuthRegisterBodyPasswordMax = 30;
 
 
 export const postAuthRegisterBody = zod.object({
   "username": zod.string().min(postAuthRegisterBodyUsernameMin).max(postAuthRegisterBodyUsernameMax),
   "email": zod.string().email(),
-  "password": zod.string()
+  "password": zod.string().min(postAuthRegisterBodyPasswordMin).max(postAuthRegisterBodyPasswordMax)
 })
 
 
@@ -44,9 +47,14 @@ export const getAuthVerifyEmailResponse = zod.object({
  * Authenticate a user and issue a JWT token.
  * @summary User Login
  */
+export const postAuthLoginBodyPasswordMin = 8;
+
+export const postAuthLoginBodyPasswordMax = 30;
+
+
 export const postAuthLoginBody = zod.object({
   "email": zod.string().email(),
-  "password": zod.string()
+  "password": zod.string().min(postAuthLoginBodyPasswordMin).max(postAuthLoginBodyPasswordMax)
 })
 
 export const postAuthLoginResponse = zod.object({
@@ -84,9 +92,14 @@ export const postAuthPasswordResetRequestResponse = zod.object({
  * Reset the user's password using a reset token.
  * @summary Password Reset
  */
+export const postAuthPasswordResetBodyNewPasswordMin = 8;
+
+export const postAuthPasswordResetBodyNewPasswordMax = 30;
+
+
 export const postAuthPasswordResetBody = zod.object({
   "token": zod.string(),
-  "newPassword": zod.string()
+  "newPassword": zod.string().min(postAuthPasswordResetBodyNewPasswordMin).max(postAuthPasswordResetBodyNewPasswordMax)
 })
 
 export const postAuthPasswordResetResponse = zod.object({
