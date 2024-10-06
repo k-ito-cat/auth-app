@@ -1,3 +1,4 @@
+import { loginSuccessResolver } from "./login/postLogin";
 import { registerSuccessResolver } from "./register/postRegister";
 
-export { registerSuccessResolver };
+export { loginSuccessResolver, registerSuccessResolver };

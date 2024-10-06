@@ -1,7 +1,7 @@
 import type { ResponseResolver } from "msw";
+import type { MessageResponse } from "../../generated/models";
 import { delay } from "msw";
 import { getPostRegisterResponseMock } from "../../generated/api.msw";
-import { MessageResponse } from "../../generated/models";
 
 import { HttpResponse } from "msw";
 

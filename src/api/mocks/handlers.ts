@@ -1,4 +1,13 @@
 import { http } from "msw";
-import { registerSuccessResolver } from "../resolver/index";
+import {
+  loginSuccessResolver,
+  registerSuccessResolver,
+} from "../resolver/index";
 
-export const handlers = [http.post("/v1/register", registerSuccessResolver)];
+const baseUrl = (path: string) =>
+  `/${import.meta.env.VITE_API_BASE_URL}/${path}`;
+
+export const handlers = [
+  http.post(baseUrl("login"), loginSuccessResolver),
+  http.post(baseUrl("register"), registerSuccessResolver),
+];
