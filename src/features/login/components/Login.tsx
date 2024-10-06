@@ -11,23 +11,21 @@ import {
   Avatar,
   Link,
 } from "@mui/material";
-import { postAuthLoginBody } from "../../../api/generated/schema/zod";
+import { postLoginBody } from "../../../api/generated/schema/zod";
 
 export const Login: React.FC = () => {
   // zodスキーマから型を推論
-  type LoginData = z.infer<typeof postAuthLoginBody>;
+  type LoginData = z.infer<typeof postLoginBody>;
 
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<LoginData>({
-    resolver: zodResolver(postAuthLoginBody),
+    resolver: zodResolver(postLoginBody),
   });
-  const onSubmit: SubmitHandler<LoginData> = (data) => console.log(data);
 
-  console.log(watch("email"));
+  const onSubmit: SubmitHandler<LoginData> = (data) => console.log(data);
 
   return (
     <Container component="main" maxWidth="xs">
