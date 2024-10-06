@@ -20,139 +20,139 @@ import type {
   UserProfile
 } from './models'
 
-export const getPostAuthRegisterResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getPostRegisterResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getGetAuthVerifyEmailResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getGetVerifyEmailResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getPostAuthLoginResponseMock = (overrideResponse: Partial< AuthResponse > = {}): AuthResponse => ({accessToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), expiresIn: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), refreshToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), userId: faker.helpers.arrayElement([faker.word.sample(), undefined]), username: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getPostLoginResponseMock = (overrideResponse: Partial< AuthResponse > = {}): AuthResponse => ({accessToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), expiresIn: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), refreshToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), userId: faker.helpers.arrayElement([faker.word.sample(), undefined]), username: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getPostAuthLogoutResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getPostLogoutResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getPostAuthPasswordResetRequestResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getPostPasswordResetRequestResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getPostAuthPasswordResetResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getPostPasswordResetResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getDeleteAuthDeleteAccountResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getDeleteDeleteAccountResponseMock = (overrideResponse: Partial< MessageResponse > = {}): MessageResponse => ({message: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getGetAuthProfileResponseMock = (overrideResponse: Partial< UserProfile > = {}): UserProfile => ({createdAt: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), email: faker.helpers.arrayElement([faker.internet.email(), undefined]), id: faker.helpers.arrayElement([faker.word.sample(), undefined]), updatedAt: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), username: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getGetProfileResponseMock = (overrideResponse: Partial< UserProfile > = {}): UserProfile => ({createdAt: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), email: faker.helpers.arrayElement([faker.internet.email(), undefined]), id: faker.helpers.arrayElement([faker.word.sample(), undefined]), updatedAt: faker.helpers.arrayElement([`${faker.date.past().toISOString().split('.')[0]}Z`, undefined]), username: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
-export const getPostAuthRefreshTokenResponseMock = (overrideResponse: Partial< AuthResponse > = {}): AuthResponse => ({accessToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), expiresIn: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), refreshToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), userId: faker.helpers.arrayElement([faker.word.sample(), undefined]), username: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
+export const getPostRefreshTokenResponseMock = (overrideResponse: Partial< AuthResponse > = {}): AuthResponse => ({accessToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), expiresIn: faker.helpers.arrayElement([faker.number.int({min: undefined, max: undefined}), undefined]), refreshToken: faker.helpers.arrayElement([faker.word.sample(), undefined]), userId: faker.helpers.arrayElement([faker.word.sample(), undefined]), username: faker.helpers.arrayElement([faker.word.sample(), undefined]), ...overrideResponse})
 
 
-export const getPostAuthRegisterMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
-  return http.post('*/auth/register', async (info) => {await delay(1000);
+export const getPostRegisterMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
+  return http.post('*/register', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getPostAuthRegisterResponseMock()),
+            : getPostRegisterResponseMock()),
       { status: 201,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getGetAuthVerifyEmailMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
-  return http.get('*/auth/verify-email', async (info) => {await delay(1000);
+export const getGetVerifyEmailMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
+  return http.get('*/verify-email', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getGetAuthVerifyEmailResponseMock()),
+            : getGetVerifyEmailResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getPostAuthLoginMockHandler = (overrideResponse?: AuthResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<AuthResponse> | AuthResponse)) => {
-  return http.post('*/auth/login', async (info) => {await delay(1000);
+export const getPostLoginMockHandler = (overrideResponse?: AuthResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<AuthResponse> | AuthResponse)) => {
+  return http.post('*/login', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getPostAuthLoginResponseMock()),
+            : getPostLoginResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getPostAuthLogoutMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
-  return http.post('*/auth/logout', async (info) => {await delay(1000);
+export const getPostLogoutMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
+  return http.post('*/logout', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getPostAuthLogoutResponseMock()),
+            : getPostLogoutResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getPostAuthPasswordResetRequestMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
-  return http.post('*/auth/password-reset-request', async (info) => {await delay(1000);
+export const getPostPasswordResetRequestMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
+  return http.post('*/password-reset-request', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getPostAuthPasswordResetRequestResponseMock()),
+            : getPostPasswordResetRequestResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getPostAuthPasswordResetMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
-  return http.post('*/auth/password-reset', async (info) => {await delay(1000);
+export const getPostPasswordResetMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
+  return http.post('*/password-reset', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getPostAuthPasswordResetResponseMock()),
+            : getPostPasswordResetResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getDeleteAuthDeleteAccountMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
-  return http.delete('*/auth/delete-account', async (info) => {await delay(1000);
+export const getDeleteDeleteAccountMockHandler = (overrideResponse?: MessageResponse | ((info: Parameters<Parameters<typeof http.delete>[1]>[0]) => Promise<MessageResponse> | MessageResponse)) => {
+  return http.delete('*/delete-account', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getDeleteAuthDeleteAccountResponseMock()),
+            : getDeleteDeleteAccountResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getGetAuthProfileMockHandler = (overrideResponse?: UserProfile | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<UserProfile> | UserProfile)) => {
-  return http.get('*/auth/profile', async (info) => {await delay(1000);
+export const getGetProfileMockHandler = (overrideResponse?: UserProfile | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<UserProfile> | UserProfile)) => {
+  return http.get('*/profile', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getGetAuthProfileResponseMock()),
+            : getGetProfileResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 
-export const getPostAuthRefreshTokenMockHandler = (overrideResponse?: AuthResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<AuthResponse> | AuthResponse)) => {
-  return http.post('*/auth/refresh-token', async (info) => {await delay(1000);
+export const getPostRefreshTokenMockHandler = (overrideResponse?: AuthResponse | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<AuthResponse> | AuthResponse)) => {
+  return http.post('*/refresh-token', async (info) => {await delay(1000);
   
     return new HttpResponse(JSON.stringify(overrideResponse !== undefined 
             ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse) 
-            : getPostAuthRefreshTokenResponseMock()),
+            : getPostRefreshTokenResponseMock()),
       { status: 200,
         headers: { 'Content-Type': 'application/json' }
       })
   })
 }
 export const getAuthenticationAPIMock = () => [
-  getPostAuthRegisterMockHandler(),
-  getGetAuthVerifyEmailMockHandler(),
-  getPostAuthLoginMockHandler(),
-  getPostAuthLogoutMockHandler(),
-  getPostAuthPasswordResetRequestMockHandler(),
-  getPostAuthPasswordResetMockHandler(),
-  getDeleteAuthDeleteAccountMockHandler(),
-  getGetAuthProfileMockHandler(),
-  getPostAuthRefreshTokenMockHandler()]
+  getPostRegisterMockHandler(),
+  getGetVerifyEmailMockHandler(),
+  getPostLoginMockHandler(),
+  getPostLogoutMockHandler(),
+  getPostPasswordResetRequestMockHandler(),
+  getPostPasswordResetMockHandler(),
+  getDeleteDeleteAccountMockHandler(),
+  getGetProfileMockHandler(),
+  getPostRefreshTokenMockHandler()]

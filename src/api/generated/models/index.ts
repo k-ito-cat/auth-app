@@ -10,6 +10,7 @@
 export * from './authResponse';
 export * from './errorResponse';
 export * from './getAuthVerifyEmailParams';
+export * from './getVerifyEmailParams';
 export * from './loginRequest';
 export * from './messageResponse';
 export * from './passwordReset';

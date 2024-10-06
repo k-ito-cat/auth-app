@@ -14,7 +14,7 @@ tags:
   - name: Authentication
     description: Endpoints for user authentication and management
 paths:
-  /auth/register:
+  /register:
     post:
       tags:
         - Authentication
@@ -71,7 +71,7 @@ paths:
                     error: User already exists.
                     errorCode: AUTH_USER_EXISTS
                     details: The email address is already registered.
-  /auth/verify-email:
+  /verify-email:
     get:
       tags:
         - Authentication
@@ -122,7 +122,7 @@ paths:
                     error: Verification token not found.
                     errorCode: AUTH_TOKEN_NOT_FOUND
                     details: No verification token found for the provided token.
-  /auth/login:
+  /login:
     post:
       tags:
         - Authentication
@@ -182,7 +182,7 @@ paths:
                     error: Unauthorized. Invalid credentials or email not verified.
                     errorCode: AUTH_UNAUTHORIZED
                     details: The email address is not verified or the password is incorrect.
-  /auth/logout:
+  /logout:
     post:
       tags:
         - Authentication
@@ -215,7 +215,7 @@ paths:
                     error: Unauthorized.
                     errorCode: AUTH_UNAUTHORIZED
                     details: No valid JWT token provided.
-  /auth/password-reset-request:
+  /password-reset-request:
     post:
       tags:
         - Authentication
@@ -270,7 +270,7 @@ paths:
                     error: User not found.
                     errorCode: AUTH_USER_NOT_FOUND
                     details: No user found with the provided email address.
-  /auth/password-reset:
+  /password-reset:
     post:
       tags:
         - Authentication
@@ -313,7 +313,7 @@ paths:
                     error: Invalid or expired reset token.
                     errorCode: AUTH_INVALID_TOKEN
                     details: The password reset token is invalid or has expired.
-  /auth/delete-account:
+  /delete-account:
     delete:
       tags:
         - Authentication
@@ -346,7 +346,7 @@ paths:
                     error: Unauthorized.
                     errorCode: AUTH_UNAUTHORIZED
                     details: No valid JWT token provided.
-  /auth/profile:
+  /profile:
     get:
       tags:
         - Authentication
@@ -383,7 +383,7 @@ paths:
                     error: Unauthorized.
                     errorCode: AUTH_UNAUTHORIZED
                     details: No valid JWT token provided.
-  /auth/refresh-token:
+  /refresh-token:
     post:
       tags:
         - Authentication

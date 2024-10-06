@@ -13,7 +13,7 @@ import type {
 } from 'axios'
 import type {
   AuthResponse,
-  GetAuthVerifyEmailParams,
+  GetVerifyEmailParams,
   LoginRequest,
   MessageResponse,
   PasswordReset,
@@ -30,11 +30,11 @@ import type {
  * Register a new user account. Sends a verification email upon successful registration.
  * @summary User Registration
  */
-const postAuthRegister = <TData = AxiosResponse<MessageResponse>>(
+const postRegister = <TData = AxiosResponse<MessageResponse>>(
     registerRequest: RegisterRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
-      `/auth/auth/register`,
+      `/auth/register`,
       registerRequest,options
     );
   }
@@ -43,11 +43,11 @@ const postAuthRegister = <TData = AxiosResponse<MessageResponse>>(
  * Verify user's email address using a token sent via email.
  * @summary Verify Email
  */
-const getAuthVerifyEmail = <TData = AxiosResponse<MessageResponse>>(
-    params: GetAuthVerifyEmailParams, options?: AxiosRequestConfig
+const getVerifyEmail = <TData = AxiosResponse<MessageResponse>>(
+    params: GetVerifyEmailParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
-      `/auth/auth/verify-email`,{
+      `/auth/verify-email`,{
     ...options,
         params: {...params, ...options?.params},}
     );
@@ -57,11 +57,11 @@ const getAuthVerifyEmail = <TData = AxiosResponse<MessageResponse>>(
  * Authenticate a user and issue a JWT token.
  * @summary User Login
  */
-const postAuthLogin = <TData = AxiosResponse<AuthResponse>>(
+const postLogin = <TData = AxiosResponse<AuthResponse>>(
     loginRequest: LoginRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
-      `/auth/auth/login`,
+      `/auth/login`,
       loginRequest,options
     );
   }
@@ -70,11 +70,11 @@ const postAuthLogin = <TData = AxiosResponse<AuthResponse>>(
  * Invalidate the user's JWT token.
  * @summary User Logout
  */
-const postAuthLogout = <TData = AxiosResponse<MessageResponse>>(
+const postLogout = <TData = AxiosResponse<MessageResponse>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
-      `/auth/auth/logout`,undefined,options
+      `/auth/logout`,undefined,options
     );
   }
 
@@ -82,11 +82,11 @@ const postAuthLogout = <TData = AxiosResponse<MessageResponse>>(
  * Request a password reset email.
  * @summary Password Reset Request
  */
-const postAuthPasswordResetRequest = <TData = AxiosResponse<MessageResponse>>(
+const postPasswordResetRequest = <TData = AxiosResponse<MessageResponse>>(
     passwordResetRequest: PasswordResetRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
-      `/auth/auth/password-reset-request`,
+      `/auth/password-reset-request`,
       passwordResetRequest,options
     );
   }
@@ -95,11 +95,11 @@ const postAuthPasswordResetRequest = <TData = AxiosResponse<MessageResponse>>(
  * Reset the user's password using a reset token.
  * @summary Password Reset
  */
-const postAuthPasswordReset = <TData = AxiosResponse<MessageResponse>>(
+const postPasswordReset = <TData = AxiosResponse<MessageResponse>>(
     passwordReset: PasswordReset, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
-      `/auth/auth/password-reset`,
+      `/auth/password-reset`,
       passwordReset,options
     );
   }
@@ -108,11 +108,11 @@ const postAuthPasswordReset = <TData = AxiosResponse<MessageResponse>>(
  * Delete the authenticated user's account.
  * @summary Delete User Account
  */
-const deleteAuthDeleteAccount = <TData = AxiosResponse<MessageResponse>>(
+const deleteDeleteAccount = <TData = AxiosResponse<MessageResponse>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.delete(
-      `/auth/auth/delete-account`,options
+      `/auth/delete-account`,options
     );
   }
 
@@ -120,11 +120,11 @@ const deleteAuthDeleteAccount = <TData = AxiosResponse<MessageResponse>>(
  * Retrieve the authenticated user's profile information.
  * @summary Get User Profile
  */
-const getAuthProfile = <TData = AxiosResponse<UserProfile>>(
+const getProfile = <TData = AxiosResponse<UserProfile>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
-      `/auth/auth/profile`,options
+      `/auth/profile`,options
     );
   }
 
@@ -132,22 +132,22 @@ const getAuthProfile = <TData = AxiosResponse<UserProfile>>(
  * Refresh the JWT token using a refresh token.
  * @summary Refresh JWT Token
  */
-const postAuthRefreshToken = <TData = AxiosResponse<AuthResponse>>(
+const postRefreshToken = <TData = AxiosResponse<AuthResponse>>(
     refreshTokenRequest: RefreshTokenRequest, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
-      `/auth/auth/refresh-token`,
+      `/auth/refresh-token`,
       refreshTokenRequest,options
     );
   }
 
-return {postAuthRegister,getAuthVerifyEmail,postAuthLogin,postAuthLogout,postAuthPasswordResetRequest,postAuthPasswordReset,deleteAuthDeleteAccount,getAuthProfile,postAuthRefreshToken}};
-export type PostAuthRegisterResult = AxiosResponse<MessageResponse>
-export type GetAuthVerifyEmailResult = AxiosResponse<MessageResponse>
-export type PostAuthLoginResult = AxiosResponse<AuthResponse>
-export type PostAuthLogoutResult = AxiosResponse<MessageResponse>
-export type PostAuthPasswordResetRequestResult = AxiosResponse<MessageResponse>
-export type PostAuthPasswordResetResult = AxiosResponse<MessageResponse>
-export type DeleteAuthDeleteAccountResult = AxiosResponse<MessageResponse>
-export type GetAuthProfileResult = AxiosResponse<UserProfile>
-export type PostAuthRefreshTokenResult = AxiosResponse<AuthResponse>
+return {postRegister,getVerifyEmail,postLogin,postLogout,postPasswordResetRequest,postPasswordReset,deleteDeleteAccount,getProfile,postRefreshToken}};
+export type PostRegisterResult = AxiosResponse<MessageResponse>
+export type GetVerifyEmailResult = AxiosResponse<MessageResponse>
+export type PostLoginResult = AxiosResponse<AuthResponse>
+export type PostLogoutResult = AxiosResponse<MessageResponse>
+export type PostPasswordResetRequestResult = AxiosResponse<MessageResponse>
+export type PostPasswordResetResult = AxiosResponse<MessageResponse>
+export type DeleteDeleteAccountResult = AxiosResponse<MessageResponse>
+export type GetProfileResult = AxiosResponse<UserProfile>
+export type PostRefreshTokenResult = AxiosResponse<AuthResponse>
