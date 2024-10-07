@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Container,
   Box,
@@ -21,17 +20,13 @@ export const Register: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterData>({
     resolver: zodResolver(postRegisterBody),
   });
 
-  const [loading, setLoading] = useState<boolean>(false);
-
   const onSubmit: SubmitHandler<RegisterData> = async (data) => {
-    setLoading(true);
     await postRegisterApi(data);
-    setLoading(false);
 
     // TODO: エラーハンドリング
   };
@@ -92,7 +87,7 @@ export const Register: React.FC = () => {
             {...register("password")}
           />
           <LoadingButton
-            loading={loading}
+            loading={isSubmitting}
             type="submit"
             fullWidth
             variant="contained"

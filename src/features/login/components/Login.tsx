@@ -6,12 +6,13 @@ import {
   Container,
   Box,
   TextField,
-  Button,
   Typography,
   Avatar,
   Link,
 } from "@mui/material";
 import { postLoginBody } from "../../../api/generated/schema/zod";
+import { postLoginApi } from "../api/postLogin";
+import { LoadingButton } from "@mui/lab";
 
 export const Login: React.FC = () => {
   // zodスキーマから型を推論
@@ -20,13 +21,15 @@ export const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginData>({
     resolver: zodResolver(postLoginBody),
   });
 
-  const onSubmit: SubmitHandler<LoginData> = (data) => console.log(data);
-
+  const onSubmit: SubmitHandler<LoginData> = async (data) => {
+    const response = await postLoginApi(data);
+    console.log(response);
+  };
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -71,7 +74,8 @@ export const Login: React.FC = () => {
             helperText={errors.password?.message}
             {...register("password")}
           />
-          <Button
+          <LoadingButton
+            loading={isSubmitting}
             type="submit"
             fullWidth
             variant="contained"
@@ -79,7 +83,7 @@ export const Login: React.FC = () => {
             sx={{ mt: 3, mb: 2 }}
           >
             ログイン
-          </Button>
+          </LoadingButton>
           <Typography variant="body2" align="center">
             新規登録は
             <Link component={RouterLink} to="/register" variant="body2">
