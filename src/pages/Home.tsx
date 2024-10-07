@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { axiosClient } from "../api/axiosClient";
 
 export const Home = () => {
   useEffect(() => {
@@ -7,12 +6,12 @@ export const Home = () => {
   }, []);
 
   const fetchRequest = async () => {
-    try {
-      const res = await axiosClient.get("/profile");
-      console.log(res.data);
-    } catch (e) {
-      console.log(e);
-    }
+    // try {
+    //   const res = await axiosClient.get("/profile");
+    //   console.log(res.data);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   };
 
   return <h1>認証成功</h1>;

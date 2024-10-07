@@ -1,17 +1,36 @@
-// src/features/auth/components/Register.tsx
-import React from "react";
 import {
   Container,
   Box,
   TextField,
-  Button,
   Typography,
   Avatar,
   Link,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { z } from "zod";
 import { Link as RouterLink } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { postRegisterBody } from "../../../api/generated/schema/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { postRegisterApi } from "../api/postRegister";
 
 export const Register: React.FC = () => {
+  type RegisterData = z.infer<typeof postRegisterBody>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterData>({
+    resolver: zodResolver(postRegisterBody),
+  });
+
+  const onSubmit: SubmitHandler<RegisterData> = async (data) => {
+    await postRegisterApi(data);
+
+    // TODO: エラーハンドリング
+  };
+
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -26,16 +45,23 @@ export const Register: React.FC = () => {
         <Typography component="h1" variant="h5">
           新規登録
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Box
+          onSubmit={handleSubmit(onSubmit)}
+          component="form"
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
             id="username"
             label="ユーザー名"
-            name="username"
             autoComplete="username"
             autoFocus
+            error={Boolean(errors.username)}
+            helperText={errors.username && errors.username.message}
+            {...register("username")}
           />
           <TextField
             margin="normal"
@@ -43,20 +69,25 @@ export const Register: React.FC = () => {
             fullWidth
             id="email"
             label="メールアドレス"
-            name="email"
             autoComplete="email"
+            error={Boolean(errors.email)}
+            helperText={errors.email && errors.email.message}
+            {...register("email")}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
             label="パスワード"
             type="password"
             id="password"
             autoComplete="new-password"
+            error={Boolean(errors.password)}
+            helperText={errors.password && errors.password.message}
+            {...register("password")}
           />
-          <Button
+          <LoadingButton
+            loading={isSubmitting}
             type="submit"
             fullWidth
             variant="contained"
@@ -64,7 +95,7 @@ export const Register: React.FC = () => {
             sx={{ mt: 3, mb: 2 }}
           >
             登録
-          </Button>
+          </LoadingButton>
           <Typography variant="body2" align="center">
             すでにアカウントをお持ちですか？{" "}
             <Link component={RouterLink} to="/login" variant="body2">

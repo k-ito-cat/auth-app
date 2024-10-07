@@ -4,7 +4,8 @@ info:
   version: 1.1.0
   description: >
     API specification for authentication mechanisms using React frontend and Express or Hono backend.
-    Supports user registration, email verification, login, password reset, account deletion, logout, and other common authentication functionalities.
+    Supports user registration with automatic login, email verification, login, password reset, account deletion, logout, and other common authentication functionalities.
+    **Note:** In development and testing environments, API responses are mocked with a 3-second delay using Mock Service Worker (MSW).
 servers:
   - url: https://api.yourdomain.com/v1
     description: Production server
@@ -14,12 +15,12 @@ tags:
   - name: Authentication
     description: Endpoints for user authentication and management
 paths:
-  /auth/register:
+  /register:
     post:
       tags:
         - Authentication
-      summary: User Registration
-      description: Register a new user account. Sends a verification email upon successful registration.
+      summary: User Registration with Automatic Login
+      description: Register a new user account. Upon successful registration, the user is automatically logged in and receives authentication tokens. A verification email is also sent.
       requestBody:
         required: true
         content:
@@ -32,19 +33,24 @@ paths:
                 value:
                   username: johndoe
                   email: johndoe@example.com
-                  password: StrongP@ssw0rd
+                  password: StrongP@ssw0rd!
       responses:
         "201":
-          description: User registered successfully. Verification email sent.
+          description: User registered successfully and logged in. Verification email sent.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MessageResponse"
+                $ref: "#/components/schemas/AuthResponse"
               examples:
-                SuccessExample:
-                  summary: Successful Registration
+                AuthSuccessExample:
+                  summary: Successful Registration and Login
                   value:
-                    message: User registered successfully. Verification email sent.
+                    message: "User registered successfully and logged in."
+                    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    refreshToken: "dGhpc2lzYXJlZnJlZXNodG9rZW4..."
+                    expiresIn: 3600
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    username: "johndoe"
         "400":
           description: Invalid input data.
           content:
@@ -55,9 +61,9 @@ paths:
                 InvalidInputExample:
                   summary: Invalid Input
                   value:
-                    error: Invalid email format.
-                    errorCode: AUTH_INVALID_INPUT
-                    details: The provided email address is not valid.
+                    error: "Invalid email format."
+                    errorCode: "AUTH_INVALID_INPUT"
+                    details: "The provided email address is not valid."
         "409":
           description: User already exists.
           content:
@@ -68,10 +74,10 @@ paths:
                 UserExistsExample:
                   summary: User Already Exists
                   value:
-                    error: User already exists.
-                    errorCode: AUTH_USER_EXISTS
-                    details: The email address is already registered.
-  /auth/verify-email:
+                    error: "User already exists."
+                    errorCode: "AUTH_USER_EXISTS"
+                    details: "The email address is already registered."
+  /verify-email:
     get:
       tags:
         - Authentication
@@ -95,7 +101,7 @@ paths:
                 VerifiedExample:
                   summary: Successful Email Verification
                   value:
-                    message: Email verified successfully.
+                    message: "Email verified successfully."
         "400":
           description: Invalid or expired token.
           content:
@@ -106,9 +112,9 @@ paths:
                 InvalidTokenExample:
                   summary: Invalid Token
                   value:
-                    error: Invalid or expired token.
-                    errorCode: AUTH_INVALID_TOKEN
-                    details: The verification token is invalid or has expired.
+                    error: "Invalid or expired token."
+                    errorCode: "AUTH_INVALID_TOKEN"
+                    details: "The verification token is invalid or has expired."
         "404":
           description: Verification token not found.
           content:
@@ -119,15 +125,15 @@ paths:
                 TokenNotFoundExample:
                   summary: Token Not Found
                   value:
-                    error: Verification token not found.
-                    errorCode: AUTH_TOKEN_NOT_FOUND
-                    details: No verification token found for the provided token.
-  /auth/login:
+                    error: "Verification token not found."
+                    errorCode: "AUTH_TOKEN_NOT_FOUND"
+                    details: "No verification token found for the provided token."
+  /login:
     post:
       tags:
         - Authentication
       summary: User Login
-      description: Authenticate a user and issue a JWT token.
+      description: Authenticate a user and issue JWT tokens.
       requestBody:
         required: true
         content:
@@ -139,7 +145,7 @@ paths:
                 summary: Sample Login Request
                 value:
                   email: johndoe@example.com
-                  password: StrongP@ssw0rd
+                  password: StrongP@ssw0rd!
       responses:
         "200":
           description: Successful login.
@@ -151,11 +157,12 @@ paths:
                 AuthSuccessExample:
                   summary: Successful Authentication
                   value:
-                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                    refreshToken: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+                    message: "User logged in successfully."
+                    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    refreshToken: "dGhpc2lzYXJlZnJlZXNodG9rZW4..."
                     expiresIn: 3600
-                    userId: 123e4567-e89b-12d3-a456-426614174000
-                    username: johndoe
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    username: "johndoe"
         "400":
           description: Invalid input data.
           content:
@@ -166,9 +173,9 @@ paths:
                 InvalidInputExample:
                   summary: Invalid Input
                   value:
-                    error: Invalid email format.
-                    errorCode: AUTH_INVALID_INPUT
-                    details: The provided email address is not valid.
+                    error: "Invalid email format."
+                    errorCode: "AUTH_INVALID_INPUT"
+                    details: "The provided email address is not valid."
         "401":
           description: Unauthorized. Invalid credentials or email not verified.
           content:
@@ -179,10 +186,10 @@ paths:
                 UnauthorizedExample:
                   summary: Unauthorized
                   value:
-                    error: Unauthorized. Invalid credentials or email not verified.
-                    errorCode: AUTH_UNAUTHORIZED
-                    details: The email address is not verified or the password is incorrect.
-  /auth/logout:
+                    error: "Unauthorized. Invalid credentials or email not verified."
+                    errorCode: "AUTH_UNAUTHORIZED"
+                    details: "The email address is not verified or the password is incorrect."
+  /logout:
     post:
       tags:
         - Authentication
@@ -201,7 +208,7 @@ paths:
                 LogoutSuccessExample:
                   summary: Successful Logout
                   value:
-                    message: Successfully logged out.
+                    message: "Successfully logged out."
         "401":
           description: Unauthorized.
           content:
@@ -212,10 +219,10 @@ paths:
                 UnauthorizedExample:
                   summary: Unauthorized
                   value:
-                    error: Unauthorized.
-                    errorCode: AUTH_UNAUTHORIZED
-                    details: No valid JWT token provided.
-  /auth/password-reset-request:
+                    error: "Unauthorized."
+                    errorCode: "AUTH_UNAUTHORIZED"
+                    details: "No valid JWT token provided."
+  /password-reset-request:
     post:
       tags:
         - Authentication
@@ -243,7 +250,7 @@ paths:
                 ResetEmailSentExample:
                   summary: Password Reset Email Sent
                   value:
-                    message: Password reset email sent.
+                    message: "Password reset email sent."
         "400":
           description: Invalid input data.
           content:
@@ -254,9 +261,9 @@ paths:
                 InvalidInputExample:
                   summary: Invalid Input
                   value:
-                    error: Invalid email format.
-                    errorCode: AUTH_INVALID_INPUT
-                    details: The provided email address is not valid.
+                    error: "Invalid email format."
+                    errorCode: "AUTH_INVALID_INPUT"
+                    details: "The provided email address is not valid."
         "404":
           description: User not found.
           content:
@@ -267,10 +274,10 @@ paths:
                 UserNotFoundExample:
                   summary: User Not Found
                   value:
-                    error: User not found.
-                    errorCode: AUTH_USER_NOT_FOUND
-                    details: No user found with the provided email address.
-  /auth/password-reset:
+                    error: "User not found."
+                    errorCode: "AUTH_USER_NOT_FOUND"
+                    details: "No user found with the provided email address."
+  /password-reset:
     post:
       tags:
         - Authentication
@@ -286,8 +293,8 @@ paths:
               PasswordResetExample:
                 summary: Sample Password Reset
                 value:
-                  token: dGhpc2lzYXRlc3R0b2tlbg...
-                  newPassword: NewStr0ngP@ssw0rd
+                  token: "dGhpc2lzYXRlc3R0b2tlbg..."
+                  newPassword: "NewStr0ngP@ssw0rd!"
       responses:
         "200":
           description: Password reset successfully.
@@ -299,7 +306,7 @@ paths:
                 ResetSuccessExample:
                   summary: Password Reset Successful
                   value:
-                    message: Password reset successfully.
+                    message: "Password reset successfully."
         "400":
           description: Invalid or expired reset token.
           content:
@@ -310,10 +317,10 @@ paths:
                 InvalidTokenExample:
                   summary: Invalid Token
                   value:
-                    error: Invalid or expired reset token.
-                    errorCode: AUTH_INVALID_TOKEN
-                    details: The password reset token is invalid or has expired.
-  /auth/delete-account:
+                    error: "Invalid or expired reset token."
+                    errorCode: "AUTH_INVALID_TOKEN"
+                    details: "The password reset token is invalid or has expired."
+  /delete-account:
     delete:
       tags:
         - Authentication
@@ -332,7 +339,7 @@ paths:
                 DeleteSuccessExample:
                   summary: Account Deleted Successfully
                   value:
-                    message: Account deleted successfully.
+                    message: "Account deleted successfully."
         "401":
           description: Unauthorized.
           content:
@@ -343,10 +350,10 @@ paths:
                 UnauthorizedExample:
                   summary: Unauthorized
                   value:
-                    error: Unauthorized.
-                    errorCode: AUTH_UNAUTHORIZED
-                    details: No valid JWT token provided.
-  /auth/profile:
+                    error: "Unauthorized."
+                    errorCode: "AUTH_UNAUTHORIZED"
+                    details: "No valid JWT token provided."
+  /profile:
     get:
       tags:
         - Authentication
@@ -365,11 +372,11 @@ paths:
                 UserProfileExample:
                   summary: Sample User Profile
                   value:
-                    id: 123e4567-e89b-12d3-a456-426614174000
-                    username: johndoe
-                    email: johndoe@example.com
-                    createdAt: 2023-01-01T12:00:00Z
-                    updatedAt: 2023-06-01T12:00:00Z
+                    id: "123e4567-e89b-12d3-a456-426614174000"
+                    username: "johndoe"
+                    email: "johndoe@example.com"
+                    createdAt: "2023-01-01T12:00:00Z"
+                    updatedAt: "2023-06-01T12:00:00Z"
         "401":
           description: Unauthorized.
           content:
@@ -380,10 +387,10 @@ paths:
                 UnauthorizedExample:
                   summary: Unauthorized
                   value:
-                    error: Unauthorized.
-                    errorCode: AUTH_UNAUTHORIZED
-                    details: No valid JWT token provided.
-  /auth/refresh-token:
+                    error: "Unauthorized."
+                    errorCode: "AUTH_UNAUTHORIZED"
+                    details: "No valid JWT token provided."
+  /refresh-token:
     post:
       tags:
         - Authentication
@@ -399,7 +406,7 @@ paths:
               RefreshTokenExample:
                 summary: Sample Refresh Token Request
                 value:
-                  refreshToken: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+                  refreshToken: "dGhpc2lzYXJlZnJlZXNodG9rZW4..."
       responses:
         "200":
           description: Token refreshed successfully.
@@ -411,11 +418,12 @@ paths:
                 RefreshSuccessExample:
                   summary: Token Refreshed Successfully
                   value:
-                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                    refreshToken: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+                    message: "Token refreshed successfully."
+                    accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    refreshToken: "dGhpc2lzYXJlZnJlZXNodG9rZW4..."
                     expiresIn: 3600
-                    userId: 123e4567-e89b-12d3-a456-426614174000
-                    username: johndoe
+                    userId: "123e4567-e89b-12d3-a456-426614174000"
+                    username: "johndoe"
         "400":
           description: Invalid refresh token.
           content:
@@ -426,9 +434,9 @@ paths:
                 InvalidRefreshTokenExample:
                   summary: Invalid Refresh Token
                   value:
-                    error: Invalid refresh token.
-                    errorCode: AUTH_INVALID_REFRESH_TOKEN
-                    details: The provided refresh token is invalid.
+                    error: "Invalid refresh token."
+                    errorCode: "AUTH_INVALID_REFRESH_TOKEN"
+                    details: "The provided refresh token is invalid."
         "401":
           description: Unauthorized.
           content:
@@ -439,9 +447,9 @@ paths:
                 UnauthorizedExample:
                   summary: Unauthorized
                   value:
-                    error: Unauthorized.
-                    errorCode: AUTH_UNAUTHORIZED
-                    details: No valid JWT token provided.
+                    error: "Unauthorized."
+                    errorCode: "AUTH_UNAUTHORIZED"
+                    details: "No valid JWT token provided."
 components:
   securitySchemes:
     bearerAuth:
@@ -460,14 +468,16 @@ components:
           type: string
           minLength: 3
           maxLength: 30
-          example: johndoe
+          example: "johndoe"
         email:
           type: string
           format: email
-          example: johndoe@example.com
+          example: "johndoe@example.com"
         password:
           type: string
-          example: StrongP@ssw0rd
+          minLength: 8
+          maxLength: 30
+          example: "StrongP@ssw0rd!"
     LoginRequest:
       type: object
       required:
@@ -477,21 +487,27 @@ components:
         email:
           type: string
           format: email
-          example: johndoe@example.com
+          example: "johndoe@example.com"
         password:
           type: string
-          example: StrongP@ssw0rd
+          minLength: 8
+          maxLength: 30
+          example: "StrongP@ssw0rd!"
     AuthResponse:
       type: object
       properties:
+        message:
+          type: string
+          description: Operation result message.
+          example: "Operation completed successfully."
         accessToken:
           type: string
           description: JWT access token.
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         refreshToken:
           type: string
           description: JWT refresh token.
-          example: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+          example: "dGhpc2lzYXJlZnJlZXNodG9rZW4..."
         expiresIn:
           type: integer
           description: Token expiration time in seconds.
@@ -499,11 +515,11 @@ components:
         userId:
           type: string
           description: Unique identifier for the user.
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: "123e4567-e89b-12d3-a456-426614174000"
         username:
           type: string
           description: Username of the authenticated user.
-          example: johndoe
+          example: "johndoe"
     PasswordResetRequest:
       type: object
       required:
@@ -512,7 +528,7 @@ components:
         email:
           type: string
           format: email
-          example: johndoe@example.com
+          example: "johndoe@example.com"
     PasswordReset:
       type: object
       required:
@@ -522,10 +538,12 @@ components:
         token:
           type: string
           description: Password reset token.
-          example: dGhpc2lzYXRlc3R0b2tlbg...
+          example: "dGhpc2lzYXRlc3R0b2tlbg..."
         newPassword:
           type: string
-          example: NewStr0ngP@ssw0rd
+          minLength: 8
+          maxLength: 30
+          example: "NewStr0ngP@ssw0rd!"
     RefreshTokenRequest:
       type: object
       required:
@@ -534,52 +552,52 @@ components:
         refreshToken:
           type: string
           description: JWT refresh token.
-          example: dGhpc2lzYXJlZnJlZXNodG9rZW4...
+          example: "dGhpc2lzYXJlZnJlZXNodG9rZW4..."
     UserProfile:
       type: object
       properties:
         id:
           type: string
           description: Unique identifier for the user.
-          example: 123e4567-e89b-12d3-a456-426614174000
+          example: "123e4567-e89b-12d3-a456-426614174000"
         username:
           type: string
           description: Username of the user.
-          example: johndoe
+          example: "johndoe"
         email:
           type: string
           format: email
           description: Email address of the user.
-          example: johndoe@example.com
+          example: "johndoe@example.com"
         createdAt:
           type: string
           format: date-time
           description: Account creation timestamp.
-          example: 2023-01-01T12:00:00Z
+          example: "2023-01-01T12:00:00Z"
         updatedAt:
           type: string
           format: date-time
           description: Last profile update timestamp.
-          example: 2023-06-01T12:00:00Z
+          example: "2023-06-01T12:00:00Z"
     MessageResponse:
       type: object
       properties:
         message:
           type: string
           description: Operation result message.
-          example: Operation completed successfully.
+          example: "Operation completed successfully."
     ErrorResponse:
       type: object
       properties:
         error:
           type: string
           description: Error message.
-          example: Invalid credentials.
+          example: "Invalid credentials."
         errorCode:
           type: string
           description: Specific error code.
-          example: AUTH_INVALID_CREDENTIALS
+          example: "AUTH_INVALID_CREDENTIALS"
         details:
           type: string
           description: Additional details about the error.
-          example: The provided password does not match our records.
+          example: "The provided password does not match our records."

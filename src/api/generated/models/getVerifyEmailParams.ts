@@ -7,17 +7,9 @@
  * OpenAPI spec version: 1.1.0
  */
 
-export interface AuthResponse {
-  /** JWT access token. */
-  accessToken?: string;
-  /** Token expiration time in seconds. */
-  expiresIn?: number;
-  /** Operation result message. */
-  message?: string;
-  /** JWT refresh token. */
-  refreshToken?: string;
-  /** Unique identifier for the user. */
-  userId?: string;
-  /** Username of the authenticated user. */
-  username?: string;
-}
+export type GetVerifyEmailParams = {
+/**
+ * Email verification token.
+ */
+token: string;
+};

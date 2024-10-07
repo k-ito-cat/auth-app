@@ -1,16 +1,35 @@
-import React from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Container,
   Box,
   TextField,
-  Button,
   Typography,
   Avatar,
   Link,
 } from "@mui/material";
+import { postLoginBody } from "../../../api/generated/schema/zod";
+import { postLoginApi } from "../api/postLogin";
+import { LoadingButton } from "@mui/lab";
 
 export const Login: React.FC = () => {
+  // zodスキーマから型を推論
+  type LoginData = z.infer<typeof postLoginBody>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginData>({
+    resolver: zodResolver(postLoginBody),
+  });
+
+  const onSubmit: SubmitHandler<LoginData> = async (data) => {
+    const response = await postLoginApi(data);
+    console.log(response);
+  };
   return (
     <Container component="main" maxWidth="xs">
       <Box
@@ -25,28 +44,38 @@ export const Login: React.FC = () => {
         <Typography component="h1" variant="h5">
           ログイン
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Box
+          onSubmit={handleSubmit(onSubmit)}
+          component="form"
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
             label="メールアドレス"
-            name="email"
             autoComplete="email"
             autoFocus
+            error={Boolean(errors.email)}
+            helperText={errors.email?.message}
+            {...register("email")}
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
             label="パスワード"
             type="password"
             id="password"
             autoComplete="current-password"
+            error={Boolean(errors.password)}
+            helperText={errors.password?.message}
+            {...register("password")}
           />
-          <Button
+          <LoadingButton
+            loading={isSubmitting}
             type="submit"
             fullWidth
             variant="contained"
@@ -54,7 +83,7 @@ export const Login: React.FC = () => {
             sx={{ mt: 3, mb: 2 }}
           >
             ログイン
-          </Button>
+          </LoadingButton>
           <Typography variant="body2" align="center">
             新規登録は
             <Link component={RouterLink} to="/register" variant="body2">
