@@ -6,7 +6,7 @@ export default defineConfig({
       target: "./docs/auth.yaml",
     },
     output: {
-      baseUrl: "/auth",
+      baseUrl: "/v1",
       mode: "split",
       target: "./generated/api.ts",
       schemas: "./generated/models",
